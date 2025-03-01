@@ -1,18 +1,3 @@
-"""
-This script makes no perminant changes to the system.
-
-- Set the mouse speed
-  - Via the registerty (so it does not reset)
-  - In memory (to take effect immidiatly)
-- Change the background image (uses the windows API)
-- Enables num-lock
-- Dissables light mode
-- Modifies taskbar
-  - Dissables 'task view'
-  - Dissables search bar
-  - Moves to the left
-"""
-
 import winreg
 from winreg import HKEY_CURRENT_USER, REG_SZ, REG_DWORD
 import ctypes
@@ -20,15 +5,6 @@ import win32con
 import os
 import subprocess
 import traceback
-
-# TODO:
-# - figure out how to change the regestry keys to set default programs for most things
-#     to notepad++
-#   - default browser to chrome
-#     - and for PDF's
-# - extract the chrome profile and copy it back across to attempt to preserve logins
-#   - And change the stupid search engine
-# - Fix powertoys
 
 
 MOUSESPEED = 20
@@ -101,9 +77,9 @@ def set_numlock():
     elif cur == 0:
         ctypes.windll.user32.keybd_event(win32con.VK_NUMLOCK, 0x3a, 0x1, 0)
         ctypes.windll.user32.keybd_event(win32con.VK_NUMLOCK, 0x3a, 0x3, 0)
-        print("[ \033[32mSUCCESS\033[0m ] Set noblock")
+        print("[ \033[32mSUCCESS\033[0m ] Enabled numlock")
     else:
-        raise SystemError(f"Got unknown response code from windll, numlock, result {res}")
+        raise SystemError(f"Got unknown response code from windll, numlock")
 
 # Set all the reg entries
 for reg in REGCHANGES:
