@@ -2,11 +2,13 @@
 # from winreg import HKEY_CURRENT_USER, REG_SZ, REG_DWORD
 # import ctypes
 # import win32con
-# import os
+import os
+import sys
+import traceback
 # import subprocess
 # import traceback
 from pprint import pprint
-
+import importlib
 import requests
 
 
@@ -14,7 +16,7 @@ COMMIT_URL = "https://api.github.com/repos/actorpus/unidesktopsetup/commits?per_
 CONTENT_URL = "https://raw.githubusercontent.com/actorpus/unidesktopsetup/refs/heads/master/main.py"
 
 
-print("[         ] Getting remote version.")
+print("[ UPDATE  ] Getting remote version.")
 
 commit = requests.get(COMMIT_URL)
 
@@ -29,14 +31,13 @@ LOCAL_VERSION = '                                        '    #
 # =========================================================== #
 
 if LOCAL_VERSION != remote_version_sha:
-    print("[         ] Local version is not up to date, updating.")
+    print("[ UPDATE  ] Local version is not up to date, updating.")
 
     remote = requests.get(CONTENT_URL)
 
     assert remote.status_code == 200, f"Got status code {remote.status_code} from remote"
 
-
-    print("[         ] Writing new version.")
+    print("[ UPDATE  ] Running new version, Ignore up to date message.")
 
     file = remote.text
 
@@ -45,19 +46,23 @@ if LOCAL_VERSION != remote_version_sha:
         f"LOCAL_VERSION = '{remote_version_sha}'    #"
     )
 
-    with open(__file__ + f".{remote_version_sha}.new", 'w') as f:
+    try:
+        exec(file)
+    except Exception as e:
+        print("[ UPDATE  ] Failed to run new version, printing traceback.")
+        traceback.print_exc()
+        print("[ UPDATE  ] New version has not been written to disk.")
+        sys.exit(1)
+
+    print("[ UPDATE  ] Writing new version to disk.")
+
+    with open(__file__, 'w') as f:
         f.write(file)
 
-    print("[         ] Running new version.")
-    # Ran by importing from the new file
-
-    import importlib
-
-    # importlib.reload(__import__(__file__ + f".{remote_version_sha}.new"))
-
+    print("[ UPDATE  ] Successfully updated.")
 
 else:
-    print("[         ] Local version is up to date.")
+    print("[ UPDATE  ] Local version is up to date.")
 
 
 # MOUSESPEED = 20
