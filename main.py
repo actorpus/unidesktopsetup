@@ -26,7 +26,7 @@ remote_version_sha = commit.json()[0]['sha']
 
 # =================== LINE MODIFIED BY CODE ================= #
 #                                                             #
-LOCAL_VERSION = '                                        '    #
+LOCAL_VERSION = '3a1a7642b5d60c0e9b31e310ce109927eaa25b66'    #
 #                                                             #
 # =========================================================== #
 
@@ -42,7 +42,7 @@ if LOCAL_VERSION != remote_version_sha:
     file = remote.text
 
     file = file.replace(
-        "LOCAL_VERSION = '                                        '    #",
+        f"LOCAL_VERSION = '{LOCAL_VERSION}'    #",
         f"LOCAL_VERSION = '{remote_version_sha}'    #"
     )
 
