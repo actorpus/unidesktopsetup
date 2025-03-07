@@ -26,14 +26,14 @@ remote_version_sha = commit.json()[0]['sha']
 
 # =================== LINE MODIFIED BY CODE ================= #
 #                                                             #
-LOCAL_VERSION = '54d7625888f2c64dc12a5668f61a5b12a11348c8'    #
+LOCAL_VERSION = 'e447149b57660a679ce88b06638d8fec209631b1'    #
 ON_NEW_VERSION = False                                        #
 #                                                             #
 # =========================================================== #
 
 if not ON_NEW_VERSION:
     if LOCAL_VERSION != remote_version_sha:
-        print("[ UPDATE  ] Local version is not up to date, updating.")
+        print("[ \033[0;33mUPDATE\033[0;0m  ] Local version is not up to date, updating.")
 
         remote = requests.get(CONTENT_URL)
 
@@ -68,6 +68,8 @@ if not ON_NEW_VERSION:
             f.write(file)
 
         print("[ UPDATE  ] Successfully updated.")
+
+        sys.exit(0)
 
     else:
         print("[ UPDATE  ] Local version is up to date.")
