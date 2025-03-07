@@ -26,43 +26,54 @@ remote_version_sha = commit.json()[0]['sha']
 
 # =================== LINE MODIFIED BY CODE ================= #
 #                                                             #
-LOCAL_VERSION = '3a1a7642b5d60c0e9b31e310ce109927eaa25b66'    #
+LOCAL_VERSION = '54d7625888f2c64dc12a5668f61a5b12a11348c8'    #
+ON_NEW_VERSION = False                                        #
 #                                                             #
 # =========================================================== #
 
-if LOCAL_VERSION != remote_version_sha:
-    print("[ UPDATE  ] Local version is not up to date, updating.")
+if not ON_NEW_VERSION:
+    if LOCAL_VERSION != remote_version_sha:
+        print("[ UPDATE  ] Local version is not up to date, updating.")
 
-    remote = requests.get(CONTENT_URL)
+        remote = requests.get(CONTENT_URL)
 
-    assert remote.status_code == 200, f"Got status code {remote.status_code} from remote"
+        assert remote.status_code == 200, f"Got status code {remote.status_code} from remote"
 
-    print("[ UPDATE  ] Running new version, Ignore up to date message.")
+        print("[ UPDATE  ] Running new version, Ignore up to date message.")
 
-    file = remote.text
+        file = remote.text
 
-    file = file.replace(
-        f"LOCAL_VERSION = '{LOCAL_VERSION}'    #",
-        f"LOCAL_VERSION = '{remote_version_sha}'    #"
-    )
+        file = file.replace(
+            f"LOCAL_VERSION = '{LOCAL_VERSION}'    #",
+            f"LOCAL_VERSION = '{remote_version_sha}'    #"
+        )
 
-    try:
-        exec(file)
-    except Exception as e:
-        print("[ UPDATE  ] Failed to run new version, printing traceback.")
-        traceback.print_exc()
-        print("[ UPDATE  ] New version has not been written to disk.")
-        sys.exit(1)
+        # Temporary so self modification doesn't break the script
+        virtualized = file.replace(
+            f"ON_NEW_VERSION = False                                        #",
+            f"ON_NEW_VERSION = True                                         #"
+        )
 
-    print("[ UPDATE  ] Writing new version to disk.")
+        try:
+            exec(virtualized)
+        except Exception as e:
+            print("[ UPDATE  ] Failed to run new version, printing traceback.")
+            traceback.print_exc()
+            print("[ UPDATE  ] New version has not been written to disk.")
+            sys.exit(1)
 
-    with open(__file__, 'w') as f:
-        f.write(file)
+        print("[ UPDATE  ] Writing new version to disk.")
 
-    print("[ UPDATE  ] Successfully updated.")
+        with open(__file__, 'w') as f:
+            f.write(file)
+
+        print("[ UPDATE  ] Successfully updated.")
+
+    else:
+        print("[ UPDATE  ] Local version is up to date.")
 
 else:
-    print("[ UPDATE  ] Local version is up to date.")
+    print("[ \033[0;33mUPDATE\033[0;0m  ] Running virtualized version, disabled update")
 
 
 print("wooo")
