@@ -65,6 +65,8 @@ else:
     print("[ UPDATE  ] Local version is up to date.")
 
 
+print("wooo")
+
 # MOUSESPEED = 20
 # BACKGROUNDPATH = rb"\\userfs\tqb510\w2k\Desktop\background.jpg"
 # POWERTOYS = r"\\userfs\tqb510\w2k\Desktop\powertoysinstall.exe"
